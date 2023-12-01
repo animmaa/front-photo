@@ -2,6 +2,8 @@
 
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import './logout.scss';
 
@@ -10,7 +12,7 @@ interface FormValues {
   password: string;
   lastname: string;
   firstname: string;
-  phone: string;
+  phone?: string;
   address: string;
   postalcode: number;
   city: string;
@@ -22,23 +24,23 @@ export default function logout() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  console.log(process.env.NEXT_PUBLIC_REACT_APP_API_URL);
-  const onSubmit = async (values: any) => {
-      console.log(values)
+  } = useForm<FormValues>();
+
+  const onSubmit = async (values: FormValues) => {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_REACT_APP_API_URL}/user/logout`,
         values
       );
-      console.log(response.data.message)
+      toast(response.data.message);
     } catch (error) {
-      console.log(error);
+      toast("une erreur s'est produite");
     }
   };
 
   return (
     <div className="logout">
+      <ToastContainer />
       <form onSubmit={handleSubmit(onSubmit)}>
         <label htmlFor="email">
           Email
@@ -66,17 +68,17 @@ export default function logout() {
         </label>
         <label htmlFor="postalcode">
           Code postal
-          <input id='postalcode' type='number' {...register('postalcode')} />
+          <input id="postalcode" {...register('postalcode')} />
         </label>
         <label htmlFor="city">
           Ville
-          <input id='city' {...register('city')} />
+          <input id="city" {...register('city')} />
         </label>
         <label htmlFor="country">
           Pays
-          <input id='country' {...register('country')} />
+          <input id="country" {...register('country')} />
         </label>
-        <button type='submit'>Créer un compte</button>
+        <button type="submit">Créer un compte</button>
       </form>
     </div>
   );
